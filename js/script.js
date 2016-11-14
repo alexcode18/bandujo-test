@@ -2,8 +2,21 @@ $(document).ready(function(){
 
 	console.log('reaching js');
 
+
+
 	findGifs('happy');
 
+	$('.menu-open-btn').on('mousedown', function(){
+		$('.menu-bkgd').css('visibility', 'visible').animate({opacity: 1}, 500);
+		$('.side-menu').animate({marginRight: 0 + '%'}, 500);
+	});
+
+	$('.menu-bkgd').on('mousedown', function(){
+		$('.side-menu').animate({marginRight: -30 + '%'}, 500);
+		$('.menu-bkgd').animate({opacity: 0}, 500);
+		setTimeout(function(){ $('.menu-bkgd').css('visibility', 'hidden'); }, 500);
+
+	});
 
 
 	// createCORSRequest('GET', 'https://api.instagram.com/oembed?url=http://instagr.am/p/fA9uwTtkSN/');
@@ -31,7 +44,7 @@ $(document).ready(function(){
 	//   }
 	// });
 
-	instaCarousel();
+	
 
 	
     $(window).on('scroll', function(){
@@ -55,27 +68,75 @@ $(document).ready(function(){
 
 });
 
-function instaCarousel(){
-	var innerCarouselWidth = $('.carousel-inner').css('width');
-	var winWidth = window.innerWidth;
-	var widthAvailable = innerCarouselWidth - winWidth;
+var instaCarousel = {
+	init: function() {
+		console.log('insta');
+		numItems = 0;
+		$('.carousel-inner').children().each(function(){
+        	numItems += 1;
+    	});
+		innerCarouselWidth = numItems * $('.item').width();
 
-	$('.right').on('mousedown', move('right'));
+		$('.carousel-inner').css('width', innerCarouselWidth);
+		winWidth = window.innerWidth;
+		widthAvailable = innerCarouselWidth - winWidth; //can't move beyond the point where the images cut-off the screen.
+		numRight = 0;
+		prevMargin = 0;
 
-	function move(direction) {
-		if (direction == 'right' && widthAvailable > winWidth) {
-			$('.carousel-inner').css('margin-left', (winWidth * -1));
+		$(document).on('mousedown', '.left', this.moveLeft);
+		$(document).on('mousedown', '.right', this.moveRight);
+
+	},
+	moveRight: function() {
+		console.log('moving right');
+		var currentMarginLeftPX = $('.carousel-inner').css('margin-left');
+	 	var currentMarginLeft = parseInt(currentMarginLeftPX, 10);
+
+		// if ((widthAvailable - winWidth) > winWidth) {
+		// 	$('.carousel-inner').animate({marginLeft: ((prevMargin + winWidth) * -1) + "px"}, 500);
+		// } else {
+		// 	$('.carousel-inner').animate({marginLeft: ((prevMargin + widthAvailable) * -1) + "px"}, 500);
+		// }
+
+		if ((widthAvailable - winWidth) > winWidth) {
+			$('.carousel-inner').animate({marginLeft: ((currentMarginLeft - winWidth)) + "px"}, 500);
+		} else {
+			$('.carousel-inner').animate({marginLeft: ((currentMarginLeft - widthAvailable)) + "px"}, 500);
 		}
 
-		if (direction == 'left' && !(widthAvailable == innerCarouselWidth - winWidth)) {
-			$('.carousel-inner').css('margin-left', (winWidth * -1));
+
+		prevMargin = prevMargin + winWidth;
+
+		widthAvailable = widthAvailable - winWidth;
+		numRight += 1;
+		console.log($('.carousel-inner').css('margin-left'));
+	},
+	moveLeft: function() {
+		console.log('moving left');
+		var currentMarginLeftPX = $('.carousel-inner').css('margin-left');
+	 	var currentMarginLeft = parseInt(currentMarginLeftPX, 10);
+
+		if (numRight > 0) {
+
+			if (currentMarginLeft + winWidth < 0) {
+				$('.carousel-inner').animate({marginLeft: (currentMarginLeft + winWidth) + "px"}, 500);
+			} else {
+				$('.carousel-inner').animate({marginLeft: 0 + "px"}, 500);
+			}
+
+			prevMargin = prevMargin + winWidth;
+			widthAvailable = widthAvailable + winWidth;
+			numRight -= 1;
+
+			console.log($('.carousel-inner').css('margin-left'));
 		}
+
+		
 	}
- 
 }
 
 function findGifs(gifType){
-	var request = $.get("http://api.giphy.com/v1/gifs/search?q="+ gifType + "&api_key=dc6zaTOxFJmzC");
+	var request = $.get("http://api.giphy.com/v1/gifs/search?q=" + gifType + "&api_key=dc6zaTOxFJmzC");
 	request.done(function(data){
 		// console.log(data.data.length);
 		for (var i = 0; i < data.data.length; i++) {
@@ -83,6 +144,8 @@ function findGifs(gifType){
 			var item = '<div class="item"><div class="col-lg-12"><img src="https://media.giphy.com/media/' + data.data[i].id + '/giphy.gif" class="img-responsive"></div></div>';
 			$('.carousel-inner').append(item);
 		}
+
+		instaCarousel.init();
 	});
 }
 

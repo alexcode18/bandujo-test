@@ -21,7 +21,54 @@ h2 {
     padding-left: 0px;
     margin-right: 0;
     margin-left: 0;
-} 
+}
+
+.side-menu {
+	z-index: 200;
+    right: 0;
+    position: fixed;
+    background: black;
+    height: 100vh;
+    margin-right: -30%;
+}
+
+.side-menu a {
+	width: 100%;
+	padding: 10px;
+	display: block;
+	text-transform: uppercase;
+	color: white;
+	cursor: pointer;
+}
+
+.side-menu a:hover,
+.side-menu a:active {
+	color: white;
+	text-decoration: none;
+}
+
+.side-menu h3 {
+	color: #F8E71C;
+	padding-left: 10px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.menu-open-btn {
+    width: 28%;
+    margin-left: 36%;
+    margin-top: 34%;
+}
+
+.menu-bkgd {
+	z-index: 199;
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	background: rgba(0,0,0,.6);
+	opacity: 0;
+	visibility: hidden;
+}
 
 .nav-bar {
 	position: fixed;
@@ -189,13 +236,13 @@ h2 {
 }
 .carousel-control {
     position: absolute;
-    top: auto;
-    bottom: 68px;
+    top: 0px;
+    bottom: 4px;
 }
 .carousel-inner .active.left { left: -33%; }
 .carousel-inner .next        { left:  33%; background-color: red; }
 .carousel-inner .prev        { left: -33%; background-color: red; }
-.carousel-control.left,.carousel-control.right {background-image:none;}
+.carousel-control.left,.carousel-control.right {background-image:none; background: red;}
 /*.item:not(.prev) {visibility: visible;}
 .item.right:not(.prev) {visibility: hidden;}
 .rightest{ visibility: visible;}
@@ -205,7 +252,10 @@ h2 {
 	padding: 5% 10%;
 }
 
-.carousel-inner>.item {display: inline-block;}
+.carousel-inner > .item {
+	display: inline-block;
+	width: 170px;
+}
 
 .panel-block .text-block {
 	text-align: center;
